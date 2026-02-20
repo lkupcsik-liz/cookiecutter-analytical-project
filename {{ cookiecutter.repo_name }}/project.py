@@ -5,10 +5,12 @@ from cookiecutter.main import cookiecutter
 base_choices = [
     questionary.Choice("Add a general python submodule", value=0),
     questionary.Choice("Add a general R submodule", value=1),
-    questionary.Choice("Add VM on GCP to give me some compute", value=2),
+    questionary.Choice("Set up GCP infrastructure (VPC, storage, VM)", value=2),
 ]
 
-base_selection = questionary.select("What do you want to do?", choices=base_choices).ask()
+base_selection = questionary.select(
+    "What do you want to do?", choices=base_choices
+).ask()
 
 if base_selection == 0:
     cookiecutter(
@@ -23,4 +25,27 @@ elif base_selection == 1:
         directory="block/r_general",
     )
 elif base_selection == 2:
-    cookiecutter("git@github.com:lizard-bio/biolizard-cloud-vm-provisioning.git")
+    layer_choices = questionary.checkbox(
+        "Which infrastructure layers do you want to set up?",
+        choices=[
+            questionary.Choice("VPC (network)", value="vpc", checked=True),
+            questionary.Choice("Buckets (data storage)", value="buckets"),
+            questionary.Choice(
+                "Compute (VM with JupyterHub + RStudio)", value="compute", checked=True
+            ),
+        ],
+    ).ask()
+
+    deploy_now = questionary.confirm(
+        "Run terraform apply automatically after generating files?", default=False
+    ).ask()
+
+    cookiecutter(
+        "git@github.com:lizard-bio/biolizard-cloud-vm-provisioning.git",
+        extra_context={
+            "deploy_vpc": "y" if "vpc" in layer_choices else "n",
+            "deploy_buckets": "y" if "buckets" in layer_choices else "n",
+            "deploy_compute": "y" if "compute" in layer_choices else "n",
+            "deploy_now": "y" if deploy_now else "n",
+        },
+    )
