@@ -12,14 +12,14 @@ base_selection = questionary.select("What do you want to do?", choices=base_choi
 
 if base_selection == 0:
     cookiecutter(
-        "git@github.com:lizard-bio/cookiecutter-analytical-project.git",
-        checkout="feature/switch_to_functional_setup",
+        "git@github.com:lkupcsik-liz/cookiecutter-analytical-project.git",
+        checkout="laszlo",
         directory="block/python_general",
     )
 elif base_selection == 1:
     cookiecutter(
-        "git@github.com:lizard-bio/cookiecutter-analytical-project.git",
-        checkout="feature/switch_to_functional_setup",
+        "git@github.com:lkupcsik-liz/cookiecutter-analytical-project.git",
+        checkout="laszlo",
         directory="block/r_general",
     )
 elif base_selection == 2:
